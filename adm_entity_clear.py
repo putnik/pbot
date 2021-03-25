@@ -26,7 +26,7 @@ def remove_qualifiers(claim):
     if PID_COUNTRY in claim.qualifiers:
         for qualifier in claim.qualifiers[PID_COUNTRY]:
             qualifiers.append(qualifier)
-    claim.removeQualifiers(qualifiers)
+    claim.removeQualifiers(qualifiers, summary=u'Remove administrative entity qualifiers that can be obtained from the target item')
     return
 
 
@@ -37,8 +37,14 @@ def check_adm_unit(item, place_pid):
     for claim in data['claims'][place_pid]:
         current_html = load_preview('{{wikidata|%s|from=%s}}' % (place_pid, item.getID()))
         new_html = load_preview('{{wikidata/песочница|%s|from=%s}}' % (place_pid, item.getID()))
+#         print(item.getID())
+#         print(current_html)
+#         print(new_html)
         if current_html == new_html:
+            print('%s: REMOVE' % item.getID())
             remove_qualifiers(claim)
+        else:
+            print('%s: SKIP' % item.getID())
 
 
 def iterate_items(pid):

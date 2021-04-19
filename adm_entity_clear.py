@@ -3,11 +3,8 @@
 import pywikibot
 import re
 from pywikibot import pagegenerators as pg
+from utils.properties import PID_BIRTH_PLACE, PID_DEATH_PLACE, PID_RESIDENCE, PID_ADM_UNIT, PID_COUNTRY
 
-PID_BIRTH_PLACE = 'P19'
-PID_DEATH_PLACE = 'P20'
-PID_ADM_UNIT = 'P131'
-PID_COUNTRY = 'P17'
 PID_FILE = 'adm_entity_%s'
 REMOVE_SUMMARY = u'Remove administrative entity qualifiers that can be obtained from the target item'
 
@@ -88,3 +85,4 @@ def iterate_items(pid):
 
 iterate_items(PID_BIRTH_PLACE)
 iterate_items(PID_DEATH_PLACE)
+iterate_items(PID_RESIDENCE)

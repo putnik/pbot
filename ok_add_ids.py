@@ -6,11 +6,9 @@ import urllib.request
 from pywikibot import Claim, pagegenerators as pg
 from time import sleep
 from urllib.error import HTTPError
+from utils.properties import PID_OK_ACCOUNT, PID_OK_PROFILE_ID
 
 repo = pywikibot.Site('wikidata', 'wikidata')
-
-P_ACCOUNT = 'P5163'
-P_ID = 'P9269'
 
 
 def parse_ok_ru(account):
@@ -31,7 +29,7 @@ def parse_ok_ru(account):
 
 
 def process_claim(claim):
-    if P_ID in claim.qualifiers:
+    if PID_OK_PROFILE_ID in claim.qualifiers:
         return
 
     account = claim.getTarget()
@@ -47,7 +45,7 @@ def process_claim(claim):
         return
 
     print("%s -> %s" % (account, account_id))
-    qualifier = Claim(repo, P_ID)
+    qualifier = Claim(repo, PID_OK_PROFILE_ID)
     qualifier.setTarget(account_id)
     claim.addQualifier(qualifier)
     return
@@ -55,9 +53,9 @@ def process_claim(claim):
 
 def add_ok_numeric_id(item):
     data = item.get()
-    if 'claims' not in data or P_ACCOUNT not in data['claims']:
+    if 'claims' not in data or PID_OK_ACCOUNT not in data['claims']:
         return
-    for claim in data['claims'][P_ACCOUNT]:
+    for claim in data['claims'][PID_OK_ACCOUNT]:
         process_claim(claim)
 
 

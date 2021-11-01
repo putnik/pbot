@@ -19,7 +19,7 @@ site_ru = pywikibot.Site('ru', 'wikipedia')
 repo = pywikibot.Site('wikidata', 'wikidata')
 
 
-def merge(target_item, redirect_item):
+def raw_merge(target_item, redirect_item):
     print('MERGE: %s <- %s' % (target_item.getID(), redirect_item.getID()))
     redirect_item.mergeInto(target_item, ignore_conflicts='description')
 
@@ -32,6 +32,17 @@ def merge(target_item, redirect_item):
         new_descriptions[code] = ''
     redirect_item.editDescriptions(new_descriptions, summary='Clearing item to prepare for redirect')
     redirect_item.set_redirect_target(target_item, force=True)
+
+
+def merge(item1, item2):
+    if item1.getID() == item2.getID():
+        return False
+
+    if item1.getID() < item2.getID():
+        raw_merge(item1, item2)
+    else:
+        raw_merge(item2, item1)
+    return True
 
 
 def iterate_items():
@@ -50,17 +61,11 @@ def iterate_items():
             print('NO PAGE: %s' % title_en)
             continue
         item_ru = subcat_ru.data_item()
-
-        id_en = item_en.getID()
-        id_ru = item_ru.getID()
-        if id_en == id_ru:
-            print('SKIP: %s = %s' % (id_en, id_ru))
-        elif id_en < id_ru:
-            merge(item_en, item_ru)
+        if merge(item_en, item_ru):
+            print('MERGE: %s + %s' % (item_en.getID(), item_ru.getID()))
             sleep(5)
         else:
-            merge(item_ru, item_en)
-            sleep(5)
+            print('SKIP: %s = %s' % (item_en.getID(), item_ru.getID()))
 
 
 iterate_items()
